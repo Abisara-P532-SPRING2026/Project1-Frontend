@@ -1,6 +1,7 @@
-// Local: backend at http://localhost:8080. For GitHub Pages, set to your Render API URL, e.g.:
-// const API = 'https://YOUR-APP.onrender.com/api';
-const API = 'http://localhost:8080/api';
+const RENDER_API = 'https://project1-backend-1-3ncm.onrender.com/api';
+
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API = isLocal ? 'http://localhost:8080/api' : RENDER_API;
 
 async function fetchDashboard() {
     const res = await fetch(`${API}/dashboard`);
