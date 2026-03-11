@@ -1,0 +1,139 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0f0f12;
+    --surface: #1a1a20;
+    --border: #2a2a32;
+    --text: #e8e8ed;
+    --muted: #888899;
+    --accent: #00d4aa;
+    --buy: #22c55e;
+    --sell: #ef4444;
+}
+
+body {
+    margin: 0;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.portfolio-summary {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.cash { color: var(--muted); }
+.total { color: var(--accent); }
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.card h2 {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.side-buy { color: var(--buy); }
+.side-sell { color: var(--sell); }
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+form select, form input {
+    padding: 0.5rem 0.75rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: inherit;
+}
+
+form input[type="number"], form input[type="text"] {
+    width: 100px;
+}
+
+form button {
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    border: none;
+    border-radius: 4px;
+    color: var(--bg);
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+form button:hover {
+    opacity: 0.9;
+}
+
+#limit-price:disabled {
+    opacity: 0.4;
+}
+
+.message {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+}
+
+.message.success { color: var(--buy); }
+.message.error { color: var(--sell); }
