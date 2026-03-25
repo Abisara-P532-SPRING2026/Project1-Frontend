@@ -11,6 +11,8 @@
         <header>
             <h1>TradeSimulator</h1>
             <div class="portfolio-summary">
+                <label for="user-select">User:</label>
+                <select id="user-select"></select>
                 <span class="cash">Cash: <strong id="cash">$0.00</strong></span>
                 <span class="total">Portfolio: <strong id="totalValue">$0.00</strong></span>
             </div>
@@ -75,8 +77,14 @@
                     <tbody></tbody>
                 </table>
             </section>
+
+            <section class="card">
+                <h2>Dashboard Alerts</h2>
+                <ul id="alerts-list"></ul>
+            </section>
         </main>
     </div>
     <script src="app.js"></script>
 </body>
 </html>
+

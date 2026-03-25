@@ -46,6 +46,8 @@ h1 {
 .portfolio-summary {
     display: flex;
     gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .cash { color: var(--muted); }
@@ -137,3 +139,9 @@ form button:hover {
 
 .message.success { color: var(--buy); }
 .message.error { color: var(--sell); }
+
+#alerts-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: var(--muted);
+}

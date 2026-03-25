@@ -3,8 +3,10 @@ const RENDER_API = 'https://project1-backend-1-3ncm.onrender.com/api';
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API = isLocal ? 'http://localhost:8080/api' : RENDER_API;
 
+let currentUser = 'user1';
+
 async function fetchDashboard() {
-    const res = await fetch(`${API}/dashboard`);
+    const res = await fetch(`${API}/dashboard?userId=${encodeURIComponent(currentUser)}`);
     if (!res.ok) throw new Error('Failed to fetch');
     return res.json();
 }
@@ -19,8 +21,10 @@ function formatTime(iso) {
 }
 
 function renderDashboard(data) {
+    currentUser = data.userId;
     document.getElementById('cash').textContent = formatMoney(data.cash);
     document.getElementById('totalValue').textContent = formatMoney(data.totalValue);
+    hydrateUsers(data.users, data.userId);
 
     const pricesBody = document.querySelector('#prices-table tbody');
     pricesBody.innerHTML = data.stocks
@@ -48,6 +52,19 @@ function renderDashboard(data) {
         : data.tradeHistory.slice().reverse().map(t =>
             `<tr><td>${formatTime(t.timestamp)}</td><td>${t.stock}</td><td class="side-${t.side.toLowerCase()}">${t.side}</td><td>${t.quantity}</td><td>${formatMoney(t.price)}</td><td>${formatMoney(t.totalValue)}</td></tr>`
         ).join('');
+
+    const alerts = document.getElementById('alerts-list');
+    alerts.innerHTML = (data.alerts || []).length === 0
+        ? '<li>No alerts yet</li>'
+        : data.alerts.slice().reverse().map(a => `<li>${formatTime(a.timestamp)} - ${a.message}</li>`).join('');
+}
+
+function hydrateUsers(users, selectedUser) {
+    const userSelect = document.getElementById('user-select');
+    if (userSelect.options.length === 0) {
+        userSelect.innerHTML = users.map(u => `<option value="${u}">${u}</option>`).join('');
+    }
+    userSelect.value = selectedUser;
 }
 
 function showMessage(msg, isError) {
@@ -74,7 +91,7 @@ document.getElementById('order-form').addEventListener('submit', async e => {
             const res = await fetch(`${API}/orders/market`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ stock, side, quantity })
+                body: JSON.stringify({ userId: currentUser, stock, side, quantity })
             });
             const data = await res.json();
             if (res.ok) {
@@ -86,7 +103,7 @@ document.getElementById('order-form').addEventListener('submit', async e => {
             const res = await fetch(`${API}/orders/limit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ stock, side, quantity, limitPrice })
+                body: JSON.stringify({ userId: currentUser, stock, side, quantity, limitPrice })
             });
             const data = await res.json();
             if (res.ok) {
@@ -101,6 +118,11 @@ document.getElementById('order-form').addEventListener('submit', async e => {
     }
 });
 
+document.getElementById('user-select').addEventListener('change', e => {
+    currentUser = e.target.value;
+    refresh();
+});
+
 function refresh() {
     fetchDashboard()
         .then(renderDashboard)
@@ -109,3 +131,4 @@ function refresh() {
 
 refresh();
 setInterval(refresh, 2000);
+
