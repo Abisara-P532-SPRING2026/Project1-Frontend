@@ -9,16 +9,39 @@
 <body>
     <div class="container">
         <header>
-            <h1>TradeSimulator</h1>
-            <div class="portfolio-summary">
-                <label for="user-select">User:</label>
-                <select id="user-select"></select>
+            <div class="header-row header-row-top">
+                <div class="header-left">
+                    <h1>TradeSimulator</h1>
+                    <button type="button" id="notification-badge" class="notification-badge" title="Alerts (click to clear count)"></button>
+                </div>
+                <div class="header-controls">
+                    <label for="user-select">User:</label>
+                    <select id="user-select"></select>
+                    <label for="strategy-select">Strategy:</label>
+                    <select id="strategy-select">
+                        <option value="random">random</option>
+                        <option value="mean-reversion">mean-reversion</option>
+                        <option value="trend-following">trend-following</option>
+                    </select>
+                </div>
+            </div>
+            <div class="header-row header-row-summary">
                 <span class="cash">Cash: <strong id="cash">$0.00</strong></span>
                 <span class="total">Portfolio: <strong id="totalValue">$0.00</strong></span>
             </div>
         </header>
 
         <main>
+            <section class="card">
+                <h2>Notify me when trades execute (this user)</h2>
+                <div class="notif-channels">
+                    <label><input type="checkbox" id="notif-console" value="CONSOLE"> Console / log</label>
+                    <label><input type="checkbox" id="notif-email" value="EMAIL"> Email (mock)</label>
+                    <label><input type="checkbox" id="notif-sms" value="SMS"> SMS (mock)</label>
+                    <label><input type="checkbox" id="notif-dashboard" value="DASHBOARD"> Dashboard alert + badge</label>
+                </div>
+            </section>
+
             <section class="card">
                 <h2>Market Prices</h2>
                 <table id="prices-table">

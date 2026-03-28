@@ -5,10 +5,34 @@ const API = isLocal ? 'http://localhost:8080/api' : RENDER_API;
 
 let currentUser = 'user1';
 
+const NOTIF_CHECKBOXES = [
+    ['CONSOLE', 'notif-console'],
+    ['EMAIL', 'notif-email'],
+    ['SMS', 'notif-sms'],
+    ['DASHBOARD', 'notif-dashboard']
+];
+
 async function fetchDashboard() {
     const res = await fetch(`${API}/dashboard?userId=${encodeURIComponent(currentUser)}`);
     if (!res.ok) throw new Error('Failed to fetch');
     return res.json();
+}
+
+async function fetchStrategy() {
+    const res = await fetch(`${API}/strategy`);
+    if (!res.ok) throw new Error('Failed to fetch strategy');
+    return res.json();
+}
+
+async function updateStrategy(strategy) {
+    const res = await fetch(`${API}/strategy`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ strategy })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.reason || 'Failed to update strategy');
+    return data;
 }
 
 function formatMoney(n) {
@@ -57,6 +81,16 @@ function renderDashboard(data) {
     alerts.innerHTML = (data.alerts || []).length === 0
         ? '<li>No alerts yet</li>'
         : data.alerts.slice().reverse().map(a => `<li>${formatTime(a.timestamp)} - ${a.message}</li>`).join('');
+
+    const badge = document.getElementById('notification-badge');
+    const count = data.notificationBadgeCount ?? 0;
+    badge.textContent = count > 0 ? String(count) : '';
+    badge.classList.toggle('has-badge', count > 0);
+
+    const enabled = new Set(data.notificationChannels || []);
+    for (const [name, id] of NOTIF_CHECKBOXES) {
+        document.getElementById(id).checked = enabled.has(name);
+    }
 }
 
 function hydrateUsers(users, selectedUser) {
@@ -123,12 +157,54 @@ document.getElementById('user-select').addEventListener('change', e => {
     refresh();
 });
 
+async function saveNotificationChannels() {
+    const channels = NOTIF_CHECKBOXES
+        .filter(([, id]) => document.getElementById(id).checked)
+        .map(([name]) => name);
+    const res = await fetch(`${API}/users/${encodeURIComponent(currentUser)}/notification-channels`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ channels })
+    });
+    if (!res.ok) throw new Error('save failed');
+}
+
+for (const [, id] of NOTIF_CHECKBOXES) {
+    document.getElementById(id).addEventListener('change', () => {
+        saveNotificationChannels().catch(() => showMessage('Failed to save notification settings', true));
+    });
+}
+
+document.getElementById('notification-badge').addEventListener('click', async () => {
+    try {
+        await fetch(`${API}/users/${encodeURIComponent(currentUser)}/notification-badge/clear`, { method: 'POST' });
+        refresh();
+    } catch (err) {
+        showMessage('Failed to clear badge', true);
+    }
+});
+
+document.getElementById('strategy-select').addEventListener('change', async e => {
+    try {
+        await updateStrategy(e.target.value);
+        refresh();
+    } catch (err) {
+        showMessage('Failed to change strategy', true);
+    }
+});
+
 function refresh() {
     fetchDashboard()
         .then(renderDashboard)
         .catch(() => {});
 }
 
-refresh();
+Promise.all([fetchStrategy(), fetchDashboard()])
+    .then(([strategy, dashboard]) => {
+        document.getElementById('strategy-select').value = strategy.current;
+        renderDashboard(dashboard);
+    })
+    .catch(() => {});
+
 setInterval(refresh, 2000);
 

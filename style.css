@@ -29,11 +29,41 @@ body {
 
 header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border);
+}
+
+.header-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-controls {
+    display: flex;
+    gap: 1rem 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.header-row-summary {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
 h1 {
@@ -43,11 +73,39 @@ h1 {
     color: var(--accent);
 }
 
-.portfolio-summary {
+.notification-badge {
+    min-width: 1.75rem;
+    height: 1.75rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.notification-badge.has-badge {
+    background: var(--sell);
+    color: #fff;
+    border-color: transparent;
+}
+
+.notif-channels {
     display: flex;
-    gap: 1.5rem;
-    align-items: center;
     flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+.notif-channels label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
 }
 
 .cash { color: var(--muted); }
